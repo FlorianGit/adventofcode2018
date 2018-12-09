@@ -59,7 +59,25 @@ def nof_claim_intersections(lst: List[Claim]) -> int:
         total += calculate_intersections(row)
     return total
 
+def intersect(cl1: Claim, cl2: Claim) -> bool:
+    if cl1.x_start <= cl2.x_end and cl2.x_start <= cl1.x_end and cl1.y_start <= cl2.y_end and cl2.y_start <= cl1.y_end:
+        return True
+    else:
+        return False
+
+def claim_without_intersection(lst: List[Claim]) -> int:
+    for cl in lst:
+        count = 0
+        for cl2 in lst:
+            if intersect(cl, cl2):
+                count += 1
+        if count == 1:
+            return cl.claim_id
+    return None
+
 claims = [Claim.from_string(line) for line in sys.stdin.readlines()]
 total = nof_claim_intersections(claims)
 print("Total number of intersections: " + str(total))
+
+print("Claim without intersection: " + str(claim_without_intersection(claims)))
 
