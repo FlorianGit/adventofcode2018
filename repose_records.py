@@ -1,4 +1,4 @@
-from typing import List, Tuple, Dict
+from typing import List, Tuple, Dict, Iterable
 import parse
 import sys
 
@@ -59,9 +59,18 @@ def read_records(lines) -> List[Record]:
             records.append(Record(guard_id, sleeping_times))
     return records
 
+def split_records(recs: List[Record]) -> Dict[int, List[Record]]:
+    d: Dict[int, List[Record]] = dict()
+    for rec in recs:
+        if rec.guard_id in d:
+            d[rec.guard_id].append(rec)
+        else:
+            d[rec.guard_id] = [rec]
+    return d
+
 def total_sleep_per_guard(records: List[Record]) -> Dict[int, int]:
     records.sort(key = lambda r: r.guard_id)
-    guards = dict([])
+    guards: Dict[int, int] = dict([])
     for record in records:
         if record.guard_id in guards:
             guards[record.guard_id] += record.total_sleep()
@@ -69,8 +78,8 @@ def total_sleep_per_guard(records: List[Record]) -> Dict[int, int]:
             guards[record.guard_id] = record.total_sleep()
     return guards
 
-def minute_most_asleep(records: List[Record]) -> int:
-    sleeping_times = []
+def minute_most_asleep(records: Iterable[Record]) -> Tuple[int, int]:
+    sleeping_times: List[int] = []
     minutes = [0] * 60
     for record in records:
         for interval in record.sleeping_times:
@@ -89,3 +98,14 @@ if __name__ == "__main__":
     minute = minute_most_asleep(most_sleeping_records)
     print(minute)
     print(sleeping_guard_id * minute[0]) #correct answer: 72925
+
+    sleeping_times: Dict[int, List[Record]] = split_records(records)
+    most_asleep: Dict[int, int] = dict([])
+    for guard_id in sleeping_times.keys():
+        minute_amount = minute_most_asleep(sleeping_times[guard_id])
+        most_asleep[guard_id] = minute_amount
+    x = max([(y, most_asleep[y]) for y in most_asleep.keys()], key = lambda z: z[1][1])
+    print(x)
+
+
+
