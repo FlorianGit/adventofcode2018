@@ -54,16 +54,21 @@ def get_infinite_areas(closest_points: List[List[int]]) -> Set[int]:
     infinite_areas |= set(closest_points[-1])
     infinite_areas |= set([row[0] for row in closest_points])
     infinite_areas |= set([row[-1] for row in closest_points])
+    if None in infinite_areas:
+        infinite_areas.remove(None)
     return infinite_areas
 
-def find_largest_area(points: List[Tuple[int, int]]) -> int:
-    """Return the point that has the largest finite area."""
+def create_grid_of_closest(points: List[Tuple[int, int]]) -> List[List[int]]:
     min_x: int = min([z[0] for z in points])
     max_x: int = max([z[0] for z in points])
     min_y: int = min([z[1] for z in points])
     max_y: int = max([z[1] for z in points])
 
-    closest_points = [[closest_point((y,x), points) for y in range(min_y, max_y + 2)] for x in range(min_x, max_x + 2)]  # TODO: why doesn't this work with + 1?
+    return [[closest_point((x,y), points) for x in range(min_x, max_x + 1)] for y in range(min_y, max_y + 1)]
+
+def find_largest_area(points: List[Tuple[int, int]]) -> int:
+    """Return the point that has the largest finite area."""
+    closest_points = create_grid_of_closest(points)
     #visualize(closest_points)
     areas = count_nof_closest(closest_points)
 

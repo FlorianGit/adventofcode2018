@@ -1,5 +1,5 @@
 import pytest
-from chronal_coordinates import dist, closest_point, exclude_keys, initial_distances, count_nof_closest, find_largest_area
+from chronal_coordinates import dist, closest_point, exclude_keys, initial_distances, count_nof_closest, find_largest_area, get_infinite_areas, create_grid_of_closest
 
 @pytest.mark.parametrize("a,b,d", [
     ((1,1), (1,1), 0),
@@ -14,6 +14,27 @@ def test_dist(a, b, d):
     assert dist(a,b) == d
 
 TEST_POINTS = [(1,1),(1,6),(8,3),(3,4),(5,5),(8,9)]
+TEST_GRID = [[0, 0, 0, 0, 0, None,2, 2, 2, 2], 
+     [0, 0, 0, 0, 0, None,2, 2, 2, 2], 
+     [0, 0, 0, 3, 3, 4, 2, 2, 2, 2], 
+     [0, 0, 3, 3, 3, 4, 2, 2, 2, 2], 
+     [None,None,3, 3, 3, 4, 4, 2, 2, 2], 
+     [1, 1, None,3, 4, 4, 4, 4, 2, 2], 
+     [1, 1, 1, None,4, 4, 4, 4, None,None],
+     [1, 1, 1, None,4, 4, 4, 5, 5, 5], 
+     [1, 1, 1, None,4, 4, 5, 5, 5, 5], 
+     [1, 1, 1, None,5, 5, 5, 5, 5, 5]]
+MINIMAL_TEST_GRID = [[0, 0, 0, 0, None,2, 2, 2], 
+     [0, 0, 3, 3, 4, 2, 2, 2], 
+     [0, 3, 3, 3, 4, 2, 2, 2], 
+     [None,3, 3, 3, 4, 4, 2, 2], 
+     [1, None,3, 4, 4, 4, 4, 2], 
+     [1, 1, None,4, 4, 4, 4, None],
+     [1, 1, None,4, 4, 4, 5, 5], 
+     [1, 1, None,4, 4, 5, 5, 5], 
+     [1, 1, None,5, 5, 5, 5, 5]]
+
+
 @pytest.mark.parametrize("z,points,results", [
         ((0,0), TEST_POINTS, [2, 7, 11, 7, 10, 17]),
         ((1,1), TEST_POINTS, [0, 5, 9, 5, 8, 15])
@@ -41,19 +62,23 @@ def test_exclude_keys(dictionary, keys, result):
     assert exclude_keys(dictionary, keys) == result
 
 @pytest.mark.parametrize("closest_points,result", [
-    ([[0, 0, 0, 0, 0, None,2, 2, 2, 2], 
-     [0, 0, 0, 0, 0, None,2, 2, 2, 2], 
-     [0, 0, 0, 3, 3, 4, 2, 2, 2, 2], 
-     [0, 0, 3, 3, 3, 4, 2, 2, 2, 2], 
-     [None,None,3, 3, 3, 4, 4, 2, 2, 2], 
-     [1, 1, None,3, 4, 4, 4, 4, 2, 2], 
-     [1, 1, 1, None,4, 4, 4, 4, None,None],
-     [1, 1, 1, None,4, 4, 4, 5, 5, 5], 
-     [1, 1, 1, None,4, 4, 5, 5, 5, 5], 
-     [1, 1, 1, None,5, 5, 5, 5, 5, 5]], {0: 15, 1: 14, 2: 21, 3: 9, 4: 17, 5: 13})
+    (TEST_GRID, {0: 15, 1: 14, 2: 21, 3: 9, 4: 17, 5: 13})
     ])
 def test_count_nof_closest(closest_points, result):
     assert count_nof_closest(closest_points) == result
+
+@pytest.mark.parametrize("closest_points,result", [
+    (TEST_GRID, {0, 1, 2, 5}),
+    (MINIMAL_TEST_GRID, {0, 1, 2, 5})
+    ])
+def test_infinite_areas(closest_points, result):
+    assert get_infinite_areas(closest_points) == result
+
+@pytest.mark.parametrize("points,result", [
+    (TEST_POINTS, MINIMAL_TEST_GRID)
+    ])
+def test_create_grid_of_closest(points, result):
+    assert create_grid_of_closest(points) == result
 
 @pytest.mark.parametrize("points,result", [
     (TEST_POINTS, 17),
