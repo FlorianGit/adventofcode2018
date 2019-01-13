@@ -29,8 +29,9 @@ def remove_type(polymer: str, char: int) -> str:
             index += 1
     return "".join([chr(x) for x in intlist])
 
-polymer = sys.stdin.readline().strip()
-print(len(reduce_polymer(polymer)))
+if __name__ == "__name__":
+    polymer = sys.stdin.readline().strip()
+    print(len(reduce_polymer(polymer)))
 
-lengths = [len(reduce_polymer(remove_type(polymer, x))) for x in range(ord('a'), ord('z') + 1)]
-print(min(lengths))
+    lengths = [len(reduce_polymer(remove_type(polymer, x))) for x in range(ord('a'), ord('z') + 1)]
+    print(min(lengths))
