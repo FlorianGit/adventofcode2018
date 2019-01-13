@@ -62,7 +62,8 @@ def test_exclude_keys(dictionary, keys, result):
     assert exclude_keys(dictionary, keys) == result
 
 @pytest.mark.parametrize("closest_points,result", [
-    (TEST_GRID, {0: 15, 1: 14, 2: 21, 3: 9, 4: 17, 5: 13})
+    (TEST_GRID, {0: 15, 1: 14, 2: 21, 3: 9, 4: 17, 5: 13}),
+    (MINIMAL_TEST_GRID, {0: 7, 1: 9, 2: 12, 3: 9, 4: 17, 5: 10})
     ])
 def test_count_nof_closest(closest_points, result):
     assert count_nof_closest(closest_points) == result

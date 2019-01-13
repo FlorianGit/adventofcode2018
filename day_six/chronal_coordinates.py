@@ -44,7 +44,7 @@ def count_nof_closest(closest_points: List[List[int]]) -> Dict[int, int]:
             elif col is not None:
                 areas[col] = 1
             else:
-                pass  # print("something excluded")
+                pass
     return areas
 
 def get_infinite_areas(closest_points: List[List[int]]) -> Set[int]:
@@ -69,7 +69,6 @@ def create_grid_of_closest(points: List[Tuple[int, int]]) -> List[List[int]]:
 def find_largest_area(points: List[Tuple[int, int]]) -> int:
     """Return the point that has the largest finite area."""
     closest_points = create_grid_of_closest(points)
-    #visualize(closest_points)
     areas = count_nof_closest(closest_points)
 
     infinite_areas = get_infinite_areas(closest_points)
@@ -79,10 +78,15 @@ def find_largest_area(points: List[Tuple[int, int]]) -> int:
     return finite_areas[max(finite_areas)]
 
 def without_nans(l):
+    """Return a copy of l with the None's removed."""
     return [x if x is not None else -1 for x in l]
 
 def visualize(closest_points: List[List[int]]):
-    """Visualize a grid."""
+    """
+    Visualize a grid.
+    
+    Not used in the solution, only for debugging purposes.
+    """
     plt.imshow([without_nans(l) for l in closest_points])
     plt.colorbar()
     plt.show()
