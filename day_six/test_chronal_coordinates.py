@@ -1,5 +1,5 @@
 import pytest
-from chronal_coordinates import dist, closest_point, exclude_keys, initial_distances, count_nof_closest, find_largest_area, get_infinite_areas, create_grid_of_closest
+from chronal_coordinates import dist, closest_point, initial_distances, count_nof_closest, find_largest_area, get_infinite_areas, create_grid_of_closest
 
 @pytest.mark.parametrize("a,b,d", [
     ((1,1), (1,1), 0),
@@ -52,14 +52,6 @@ def test_initial_distances(z, points, results):
     ])
 def test_closest_point(z, points, closest):
     assert closest_point(z, points) == closest
-
-@pytest.mark.parametrize("dictionary,keys,result", [
-    ({'a': 1, 'b': 2, 'c': 3}, set(['b']), {'a': 1, 'c': 3}),
-    ({1: 2, 2: 3, 5: 6}, set([1]), {2: 3, 5: 6}),
-    ({1: 2, 2: 3, 5: 6}, set([1, 5]), {2: 3})
-    ])
-def test_exclude_keys(dictionary, keys, result):
-    assert exclude_keys(dictionary, keys) == result
 
 @pytest.mark.parametrize("closest_points,result", [
     (TEST_GRID, {0: 15, 1: 14, 2: 21, 3: 9, 4: 17, 5: 13}),

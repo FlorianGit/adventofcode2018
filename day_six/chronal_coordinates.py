@@ -1,10 +1,13 @@
 from typing import Tuple, Dict, List, Set, Any
 import sys
 import matplotlib.pyplot as plt
+from operator import itemgetter
 
 def dist(a: Tuple[int, int], b: Tuple[int, int]) -> int:
     """Calculate Manhattan distance between two points in two-dimensional space."""
-    return abs(a[0] - b[0]) + abs(a[1] - b[1])
+    x1, y1 = a
+    x2, y2 = b
+    return abs(x1 - x2) + abs(y1 - y2)
 
 def initial_distances(z: Tuple[int, int], points: List[Tuple[int, int]]) -> List[int]:
     """Return an array with the distance from z to each point in points."""
@@ -16,19 +19,11 @@ def closest_point(z: Tuple[int, int], points: List[Tuple[int, int]]) -> int:
     In case of a tie, None is returned.
     """
     distances = list(enumerate(initial_distances(z, points)))
-    distances.sort(key=lambda x: x[1])
+    distances.sort(key=itemgetter(1))
     if distances[0][1] == distances[1][1]:
         return None
     else:
         return distances[0][0]
-
-def exclude_keys(dictionary: Dict[Any, Any], keys: Set[int]):
-    """Return a copy of dictionary, with the keys from keys removed."""
-    d = dict(dictionary)
-    for key in keys:
-        if key is not None:
-            d.pop(key)
-    return d
 
 def count_nof_closest(closest_points: List[List[int]]) -> Dict[int, int]:
     """Return the number of points that each point is closest to.
@@ -36,7 +31,7 @@ def count_nof_closest(closest_points: List[List[int]]) -> Dict[int, int]:
     Parameters:
         closest_points: a 2-dimensional array where each entry holds the index of the point that it is closest to.
     """
-    areas: Dict[int, int] = dict([])
+    areas: Dict[int, int] = {}
     for row in closest_points:
         for col in row:
             if col is not None and col in areas:
@@ -72,7 +67,7 @@ def find_largest_area(points: List[Tuple[int, int]]) -> int:
     areas = count_nof_closest(closest_points)
 
     infinite_areas = get_infinite_areas(closest_points)
-    finite_areas = exclude_keys(areas, infinite_areas)
+    finite_areas = {area: nof_closest for area, nof_closest in areas.items() if area not in infinite_areas}
     print(max(finite_areas))
     print(points[max(finite_areas)])
     return finite_areas[max(finite_areas.items(), key=itemgetter(1))[0]]
@@ -95,5 +90,4 @@ def visualize(closest_points: List[List[int]]):
 if __name__ == "__main__":
     pnts: List[List[str]] = [x.strip().split(', ') for x in sys.stdin.readlines()]
     points: List[Tuple[int, int]] = [(int(z[0]), int(z[1])) for z in pnts]
-    print(points)
     print(find_largest_area(points))
