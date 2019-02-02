@@ -75,7 +75,7 @@ def find_largest_area(points: List[Tuple[int, int]]) -> int:
     finite_areas = exclude_keys(areas, infinite_areas)
     print(max(finite_areas))
     print(points[max(finite_areas)])
-    return finite_areas[max(finite_areas)]
+    return finite_areas[max(finite_areas.items(), key=itemgetter(1))[0]]
 
 def without_nans(l):
     """Return a copy of l with the None's removed."""
