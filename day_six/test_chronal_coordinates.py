@@ -1,5 +1,5 @@
 import pytest
-from chronal_coordinates import dist, closest_point, initial_distances, count_nof_closest, find_largest_area, get_infinite_areas, create_grid_of_closest
+from chronal_coordinates import dist, closest_point, initial_distances, count_nof_closest, find_largest_area, get_infinite_areas, create_grid
 
 @pytest.mark.parametrize("a,b,d", [
     ((1,1), (1,1), 0),
@@ -70,8 +70,8 @@ def test_infinite_areas(closest_points, result):
 @pytest.mark.parametrize("points,result", [
     (TEST_POINTS, MINIMAL_TEST_GRID)
     ])
-def test_create_grid_of_closest(points, result):
-    assert create_grid_of_closest(points) == result
+def test_create_grid(points, result):
+    assert create_grid(points, closest_point) == result
 
 @pytest.mark.parametrize("points,result", [
     (TEST_POINTS, 17),

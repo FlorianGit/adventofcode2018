@@ -1,4 +1,4 @@
-from typing import Tuple, Dict, List, Set, Any
+from typing import Tuple, Dict, List, Set, Any, Callable
 import sys
 import matplotlib.pyplot as plt
 from operator import itemgetter
@@ -53,24 +53,36 @@ def get_infinite_areas(closest_points: List[List[int]]) -> Set[int]:
         infinite_areas.remove(None)
     return infinite_areas
 
-def create_grid_of_closest(points: List[Tuple[int, int]]) -> List[List[int]]:
+def create_grid(points: List[Tuple[int, int]], target_func: Callable[[Tuple[int, int]], int]) -> List[List[int]]:
     min_x: int = min([z[0] for z in points])
     max_x: int = max([z[0] for z in points])
     min_y: int = min([z[1] for z in points])
     max_y: int = max([z[1] for z in points])
 
-    return [[closest_point((x,y), points) for x in range(min_x, max_x + 1)] for y in range(min_y, max_y + 1)]
+    return [[target_func((x,y), points) for x in range(min_x, max_x + 1)] for y in range(min_y, max_y + 1)]
 
 def find_largest_area(points: List[Tuple[int, int]]) -> int:
     """Return the point that has the largest finite area."""
-    closest_points = create_grid_of_closest(points)
+    closest_points = create_grid(points, closest_point)
     areas = count_nof_closest(closest_points)
 
     infinite_areas = get_infinite_areas(closest_points)
     finite_areas = {area: nof_closest for area, nof_closest in areas.items() if area not in infinite_areas}
-    print(max(finite_areas))
-    print(points[max(finite_areas)])
     return finite_areas[max(finite_areas.items(), key=itemgetter(1))[0]]
+
+def total_distance(z: Tuple[int, int], points: List[Tuple[int, int]]) -> int:
+    distances = list(initial_distances(z, points))
+    total = sum(distances)
+    return total
+
+def find_area_with_total_distance_below(points: List[Tuple[int, int]], threshold: int) -> int:
+    distances = create_grid(points, total_distance)
+    total = 0
+    for row in distances:
+        for col in row:
+            if col < threshold:
+                total += 1
+    return total
 
 def without_nans(l):
     """Return a copy of l with the None's removed."""
@@ -91,3 +103,4 @@ if __name__ == "__main__":
     pnts: List[List[str]] = [x.strip().split(', ') for x in sys.stdin.readlines()]
     points: List[Tuple[int, int]] = [(int(z[0]), int(z[1])) for z in pnts]
     print(find_largest_area(points))
+    print(find_area_with_total_distance_below(points, 10000))
