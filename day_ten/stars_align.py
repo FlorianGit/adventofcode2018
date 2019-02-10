@@ -35,6 +35,7 @@ class Sky():
         for i in range(0, 100000):
             if target_function(self.at_time(i)) <= target_function(self.at_time(i-1)) and target_function(self.at_time(i)) <= target_function(self.at_time(i + 1)):
                 self.print_at_time(i)
+                print(i)
                 break
 
 def shortest(grid: List[Tuple[int, int]]) -> int:
